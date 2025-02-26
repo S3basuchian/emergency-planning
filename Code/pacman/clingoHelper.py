@@ -10,7 +10,8 @@ class ClingoHelper:
         self.ctl = clingo.Control(
             ["-c", f"horizon={horizon}",
              "-c", f"radius={radius}",
-             "-c", f"ghosts={ghosts}"])
+             "-c", f"ghosts={ghosts}",
+             "--parallel-mode=11"])
         self.ctl.load('program.lp')
         self.ctl.ground([("base", [])], context=self)
 
