@@ -9,7 +9,7 @@ EPISODES = 50000
 
 class Learning:
 
-    def __init__(self, alpha=0.1, gamma=0.8, epsilon=0.6):
+    def __init__(self, alpha=0.1, gamma=0.99, epsilon=0.8):
         # Hyperparameters
         self.alpha = alpha
         self.gamma = gamma
@@ -46,7 +46,7 @@ class Learning:
                 if state in self.states:
                     next_idx = self.states.index(state)
                     if state != s:
-                        reward = -1
+                        reward = -0.000001
                     if state == instance.target:
                         reward = 100
                         done = True
@@ -96,10 +96,17 @@ class Learning:
         starting_states = self.create_starting_states(instance)
         self.name = instance.name
         self.q_table = np.zeros([len(self.states), len(self.actions)])
+        start_epsilon = self.epsilon
         for i in range(1, EPISODES + len(starting_states) * 5):
+            if i % 1000 == 0:
+                print("episode " + str(i) + " of " + str(EPISODES + len(starting_states) * 5) + "")
             if i < EPISODES:
+                self.epsilon = self.epsilon - (start_epsilon / EPISODES)
                 state_idx = self.states.index(instance.player)
             else:
+                if i == EPISODES:
+                    self.epsilon = start_epsilon
+                self.epsilon = self.epsilon - (start_epsilon / (len(starting_states) * 5))
                 state_idx = self.states.index(
                     starting_states[i % len(starting_states)])
 
